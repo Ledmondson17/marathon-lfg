@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 
-const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage']
+const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 const PLATFORMS = ['ps5', 'xbox', 'pc']
 const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }
 const TIMEZONES = ['ET', 'CT', 'MT', 'PT', 'GMT', 'CET', 'JST', 'AEST']

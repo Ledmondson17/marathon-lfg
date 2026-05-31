@@ -10,6 +10,7 @@ const CLASS_COLORS = {
   Assassin: 'bg-purple-900/40 border-purple-700 text-purple-300',
   Thief: 'bg-yellow-900/40 border-yellow-700 text-yellow-300',
   Triage: 'bg-green-900/40 border-green-700 text-green-300',
+  Sentinel: 'bg-cyan-900/40 border-cyan-700 text-cyan-300',
 }
 
 const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }

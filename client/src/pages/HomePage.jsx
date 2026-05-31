@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage']
+const CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 
 export default function HomePage() {
   return (

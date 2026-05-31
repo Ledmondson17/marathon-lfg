@@ -71,7 +71,7 @@ export async function updateProfile(req, res) {
     return res.status(400).json({ message: 'You can only select up to 3 classes.' })
   }
 
-  const VALID_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage']
+  const VALID_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
   if (top_classes && top_classes.some((c) => !VALID_CLASSES.includes(c))) {
     return res.status(400).json({ message: 'Invalid class selection.' })
   }
