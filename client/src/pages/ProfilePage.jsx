@@ -30,6 +30,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [bungieStats, setBungieStats] = useState(null)
+  const [connStatus, setConnStatus] = useState(null) // { id, status, i_sent } or null
+  const [connLoading, setConnLoading] = useState(false)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -44,6 +46,54 @@ export default function ProfilePage() {
     }
     fetchProfile()
   }, [username])
+
+  // Fetch connection status when viewing someone else's profile
+  useEffect(() => {
+    if (!currentUser || currentUser.username === username) return
+    const fetchStatus = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get(`/api/connections/status/${username}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        setConnStatus(res.data)
+      } catch {
+        // Not logged in or error — no button shown
+      }
+    }
+    fetchStatus()
+  }, [username, currentUser])
+
+  const handleRunTogether = async () => {
+    setConnLoading(true)
+    try {
+      const token = localStorage.getItem('token')
+      const res = await axios.post('/api/connections', { recipient_username: username }, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setConnStatus({ id: res.data.id, status: 'pending', i_sent: true })
+    } catch {
+      // Already requested or error — refresh status
+    } finally {
+      setConnLoading(false)
+    }
+  }
+
+  const handleRemoveConnection = async () => {
+    if (!connStatus?.id) return
+    setConnLoading(true)
+    try {
+      const token = localStorage.getItem('token')
+      await axios.delete(`/api/connections/${connStatus.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setConnStatus({ status: 'none' })
+    } catch {
+      // ignore
+    } finally {
+      setConnLoading(false)
+    }
+  }
 
   // Fetch Bungie stats only if viewing your own profile (requires auth token)
   useEffect(() => {
@@ -99,13 +149,72 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-          {isOwnProfile && (
+          {isOwnProfile ? (
             <Link
               to="/profile/edit"
               className="bg-brand-card border border-brand-border hover:border-brand-accent text-brand-text text-sm px-4 py-2 rounded transition-colors flex-shrink-0"
             >
               Edit Profile
             </Link>
+          ) : currentUser && connStatus && (
+            <div className="flex flex-col items-end gap-1 flex-shrink-0">
+              {/* No connection yet */}
+              {connStatus.status === 'none' && (
+                <button onClick={handleRunTogether} disabled={connLoading}
+                  className="bg-brand-accent hover:bg-brand-accentHover disabled:opacity-50 text-white text-sm px-4 py-2 rounded font-medium transition-colors">
+                  {connLoading ? 'Sending...' : 'Run Together'}
+                </button>
+              )}
+              {/* Request sent, waiting */}
+              {connStatus.status === 'pending' && connStatus.i_sent && (
+                <div className="flex flex-col items-end gap-1">
+                  <span className="text-brand-muted text-sm px-4 py-2 border border-brand-border rounded">
+                    Request Sent
+                  </span>
+                  <button onClick={handleRemoveConnection}
+                    className="text-brand-muted hover:text-red-400 text-xs transition-colors">
+                    Cancel
+                  </button>
+                </div>
+              )}
+              {/* They sent you a request */}
+              {connStatus.status === 'pending' && !connStatus.i_sent && (
+                <div className="flex gap-2">
+                  <button onClick={async () => {
+                    const token = localStorage.getItem('token')
+                    await axios.put(`/api/connections/${connStatus.id}`, { action: 'accept' }, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    })
+                    setConnStatus({ ...connStatus, status: 'accepted' })
+                  }}
+                    className="bg-brand-accent hover:bg-brand-accentHover text-white text-sm px-3 py-2 rounded font-medium transition-colors">
+                    Accept
+                  </button>
+                  <button onClick={async () => {
+                    const token = localStorage.getItem('token')
+                    await axios.put(`/api/connections/${connStatus.id}`, { action: 'decline' }, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    })
+                    setConnStatus({ status: 'none' })
+                  }}
+                    className="bg-brand-card border border-brand-border hover:border-red-500 text-brand-muted hover:text-red-400 text-sm px-3 py-2 rounded transition-colors">
+                    Decline
+                  </button>
+                </div>
+              )}
+              {/* Already squadmates */}
+              {connStatus.status === 'accepted' && (
+                <div className="flex flex-col items-end gap-1">
+                  <span className="text-green-400 text-sm px-4 py-2 border border-green-800 rounded bg-green-900/20">
+                    ✓ Squadmates
+                  </span>
+                  <button onClick={handleRemoveConnection}
+                    className="text-brand-muted hover:text-red-400 text-xs transition-colors">
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
 

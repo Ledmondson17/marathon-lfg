@@ -1,9 +1,31 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useState, useEffect } from 'react'
+import axios from '../api/axios'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [pendingCount, setPendingCount] = useState(0)
+
+  // Poll for pending connection requests every 30 seconds while logged in
+  useEffect(() => {
+    if (!user) return
+    const fetchPending = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('/api/connections/pending-count', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        setPendingCount(res.data.count)
+      } catch {
+        // Silently fail — not critical
+      }
+    }
+    fetchPending()
+    const interval = setInterval(fetchPending, 30000)
+    return () => clearInterval(interval)
+  }, [user])
 
   const handleLogout = () => {
     logout()
@@ -36,6 +58,18 @@ export default function Navbar() {
 
           {user ? (
             <>
+              {/* Connections inbox with badge */}
+              <Link
+                to="/connections"
+                className="relative text-brand-muted hover:text-brand-text transition-colors text-sm font-medium"
+              >
+                Squad Requests
+                {pendingCount > 0 && (
+                  <span className="absolute -top-2 -right-3 bg-brand-accent text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                    {pendingCount}
+                  </span>
+                )}
+              </Link>
               <Link
                 to={`/profile/${user.username}`}
                 className="text-brand-muted hover:text-brand-text transition-colors text-sm font-medium"
