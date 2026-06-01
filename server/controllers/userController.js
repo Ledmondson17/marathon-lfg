@@ -74,6 +74,21 @@ export async function getProfile(req, res) {
     )
     user.media = mediaResult.rows
 
+    // Attach accepted squadmates
+    const squadResult = await pool.query(
+      `SELECT
+        CASE WHEN c.requester_id = $1 THEN u2.username ELSE u1.username END AS username,
+        CASE WHEN c.requester_id = $1 THEN u2.avatar_url ELSE u1.avatar_url END AS avatar_url,
+        CASE WHEN c.requester_id = $1 THEN u2.top_classes ELSE u1.top_classes END AS top_classes
+       FROM connections c
+       JOIN users u1 ON u1.id = c.requester_id
+       JOIN users u2 ON u2.id = c.recipient_id
+       WHERE (c.requester_id = $1 OR c.recipient_id = $1)
+         AND c.status = 'accepted'`,
+      [user.id]
+    )
+    user.squadmates = squadResult.rows
+
     res.json(user)
   } catch (err) {
     console.error(err)

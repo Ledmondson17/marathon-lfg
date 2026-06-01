@@ -346,6 +346,34 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* Squadmates */}
+        {profile.squadmates?.length > 0 && (
+          <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-4">
+              Squadmates ({profile.squadmates.length})
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {profile.squadmates.map((s) => (
+                <Link
+                  key={s.username}
+                  to={`/profile/${s.username}`}
+                  className="flex items-center gap-2 bg-brand-card border border-brand-border hover:border-brand-accent rounded-lg px-3 py-2 transition-colors group"
+                >
+                  <div className="w-7 h-7 rounded-full bg-brand-border overflow-hidden flex-shrink-0 flex items-center justify-center text-xs font-bold text-brand-muted">
+                    {s.avatar_url
+                      ? <img src={s.avatar_url} alt={s.username} className="w-full h-full object-cover" />
+                      : s.username[0].toUpperCase()
+                    }
+                  </div>
+                  <span className="text-brand-text text-sm group-hover:text-brand-accent transition-colors">
+                    {s.username}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Media */}
         {profile.media?.length > 0 && (
           <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
