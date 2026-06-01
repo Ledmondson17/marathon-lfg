@@ -127,8 +127,11 @@ export default function ProfilePage() {
         {/* Bungie stats */}
         {(profile.bungie_display_name || bungieStats) && (
           <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted">Bungie Account</h2>
+              <span className="text-xs text-brand-muted border border-brand-border rounded px-2 py-0.5">
+                Destiny 2 stats · Marathon stats coming soon
+              </span>
             </div>
             {profile.bungie_display_name && (
               <p className="text-brand-text text-sm mb-4">
