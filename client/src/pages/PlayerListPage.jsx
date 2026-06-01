@@ -9,7 +9,7 @@ const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }
 export default function PlayerListPage() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '' })
+  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '' })
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -19,6 +19,7 @@ export default function PlayerListPage() {
         if (filters.class) params.class = filters.class
         if (filters.search) params.search = filters.search
         if (filters.kd) params.kd = filters.kd
+        if (filters.timezone) params.timezone = filters.timezone
         const res = await axios.get('/api/users', { params })
         setPlayers(res.data)
       } catch {
@@ -73,6 +74,21 @@ export default function PlayerListPage() {
             <option value="1.7-1.99">1.7 – 1.99 K/D</option>
             <option value="2.0+">2.0+ K/D</option>
           </select>
+          <select
+            value={filters.timezone}
+            onChange={(e) => setFilters({ ...filters, timezone: e.target.value })}
+            className="bg-brand-surface border border-brand-border rounded px-4 py-2 text-brand-text focus:outline-none focus:border-brand-accent transition-colors text-sm"
+          >
+            <option value="">All Timezones</option>
+            <option value="ET">ET — Eastern</option>
+            <option value="CT">CT — Central</option>
+            <option value="MT">MT — Mountain</option>
+            <option value="PT">PT — Pacific</option>
+            <option value="GMT">GMT — Greenwich</option>
+            <option value="CET">CET — Central European</option>
+            <option value="JST">JST — Japan</option>
+            <option value="AEST">AEST — Australia Eastern</option>
+          </select>
         </div>
 
         {/* Player cards */}
@@ -99,8 +115,10 @@ export default function PlayerListPage() {
                     <p className="font-semibold text-brand-text group-hover:text-brand-accent transition-colors">
                       {player.username}
                     </p>
-                    {player.region && (
-                      <p className="text-brand-muted text-xs">{player.region} · {player.timezone}</p>
+                    {(player.region || player.timezone) && (
+                      <p className="text-brand-muted text-xs">
+                        {[player.region, player.timezone].filter(Boolean).join(' · ')}
+                      </p>
                     )}
                   </div>
                 </div>

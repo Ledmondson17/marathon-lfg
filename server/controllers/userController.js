@@ -5,7 +5,7 @@ import { cloudinary, uploadToCloudinary } from '../middleware/upload.js'
 const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, bungie_kd, created_at'
 
 export async function getPlayers(req, res) {
-  const { platform, class: cls, search, kd } = req.query
+  const { platform, class: cls, search, kd, timezone } = req.query
   let query = `SELECT ${PUBLIC_FIELDS} FROM users`
   const conditions = []
   const values = []
@@ -21,6 +21,10 @@ export async function getPlayers(req, res) {
   if (search) {
     values.push(`%${search}%`)
     conditions.push(`username ILIKE $${values.length}`)
+  }
+  if (timezone) {
+    values.push(timezone)
+    conditions.push(`timezone = $${values.length}`)
   }
   if (kd) {
     // Players with no Bungie account (NULL k/d) are treated as 0-1.0
