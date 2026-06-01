@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/users.js'
+import bungieRoutes from './routes/bungie.js'
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ app.use(express.json())
 
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/auth/bungie', bungieRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)

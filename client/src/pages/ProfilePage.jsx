@@ -29,6 +29,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [bungieStats, setBungieStats] = useState(null)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -43,6 +44,23 @@ export default function ProfilePage() {
     }
     fetchProfile()
   }, [username])
+
+  // Fetch Bungie stats only if viewing your own profile (requires auth token)
+  useEffect(() => {
+    const fetchStats = async () => {
+      const token = localStorage.getItem('token')
+      if (!token || !currentUser || currentUser.username !== username) return
+      try {
+        const res = await axios.get('/api/auth/bungie/stats', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        setBungieStats(res.data)
+      } catch {
+        // Stats not available — no problem, just don't show the section
+      }
+    }
+    fetchStats()
+  }, [username, currentUser])
 
   if (loading) return <div className="min-h-screen bg-brand-bg flex items-center justify-center text-brand-muted">Loading...</div>
   if (error) return <div className="min-h-screen bg-brand-bg flex items-center justify-center text-red-400">{error}</div>
@@ -103,6 +121,64 @@ export default function ProfilePage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Bungie stats */}
+        {(profile.bungie_display_name || bungieStats) && (
+          <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted">Bungie Account</h2>
+            </div>
+            {profile.bungie_display_name && (
+              <p className="text-brand-text text-sm mb-4">
+                <span className="text-brand-muted">Linked as </span>
+                <span className="text-brand-accent font-medium">{profile.bungie_display_name}</span>
+              </p>
+            )}
+            {bungieStats?.stats && (
+              <div className="grid grid-cols-3 gap-3">
+                {bungieStats.stats.kd && (
+                  <div className="bg-brand-card border border-brand-border rounded-lg p-3 text-center">
+                    <p className="text-brand-accent text-lg font-bold">{bungieStats.stats.kd}</p>
+                    <p className="text-brand-muted text-xs mt-0.5">K/D</p>
+                  </div>
+                )}
+                {bungieStats.stats.kills && (
+                  <div className="bg-brand-card border border-brand-border rounded-lg p-3 text-center">
+                    <p className="text-brand-accent text-lg font-bold">{bungieStats.stats.kills}</p>
+                    <p className="text-brand-muted text-xs mt-0.5">Kills</p>
+                  </div>
+                )}
+                {bungieStats.stats.wins && (
+                  <div className="bg-brand-card border border-brand-border rounded-lg p-3 text-center">
+                    <p className="text-brand-accent text-lg font-bold">{bungieStats.stats.wins}</p>
+                    <p className="text-brand-muted text-xs mt-0.5">Wins</p>
+                  </div>
+                )}
+                {bungieStats.stats.matches && (
+                  <div className="bg-brand-card border border-brand-border rounded-lg p-3 text-center">
+                    <p className="text-brand-accent text-lg font-bold">{bungieStats.stats.matches}</p>
+                    <p className="text-brand-muted text-xs mt-0.5">Matches</p>
+                  </div>
+                )}
+                {bungieStats.stats.winRate && (
+                  <div className="bg-brand-card border border-brand-border rounded-lg p-3 text-center">
+                    <p className="text-brand-accent text-lg font-bold">{bungieStats.stats.winRate}</p>
+                    <p className="text-brand-muted text-xs mt-0.5">Win Rate</p>
+                  </div>
+                )}
+                {bungieStats.stats.deaths && (
+                  <div className="bg-brand-card border border-brand-border rounded-lg p-3 text-center">
+                    <p className="text-brand-accent text-lg font-bold">{bungieStats.stats.deaths}</p>
+                    <p className="text-brand-muted text-xs mt-0.5">Deaths</p>
+                  </div>
+                )}
+              </div>
+            )}
+            {bungieStats?.message && (
+              <p className="text-brand-muted text-sm">{bungieStats.message}</p>
+            )}
           </div>
         )}
 

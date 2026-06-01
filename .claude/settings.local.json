@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "PowerShell(Get-Command node, npm, npx -ErrorAction SilentlyContinue)",
+      "PowerShell($env:Path -split \";\" | Where-Object { $_ -match \"node|nvm\" })",
+      "PowerShell($env:Path = \"C:\\\\Program Files\\\\nodejs;\" + $env:Path; cd \"C:\\\\Users\\\\Lawrence\\\\Desktop\\\\CODE\\\\Marathon LFG website\\\\client\"; & \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" install 2>&1)",
+      "PowerShell(cd \"C:\\\\Users\\\\Lawrence\\\\Desktop\\\\CODE\\\\Marathon LFG website\"; $files = @\\(\"client/src/pages/EditProfilePage.jsx\",\"client/src/pages/LoginPage.jsx\",\"client/src/pages/PlayerListPage.jsx\",\"client/src/pages/ProfilePage.jsx\",\"client/src/pages/RegisterPage.jsx\"\\); foreach \\($f in $files\\) { \\(Get-Content $f\\) -replace \"import axios from 'axios'\", \"import axios from '../api/axios'\" | Set-Content $f })"
+    ]
+  }
+}

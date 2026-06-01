@@ -2,7 +2,7 @@ import pool from '../db/pool.js'
 import { cloudinary, uploadToCloudinary } from '../middleware/upload.js'
 
 // Public columns safe to return to the frontend
-const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, created_at'
+const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, created_at'
 
 export async function getPlayers(req, res) {
   const { platform, class: cls, search } = req.query
