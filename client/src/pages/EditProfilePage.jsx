@@ -406,7 +406,7 @@ export default function EditProfilePage() {
               )}
             </div>
             <a
-              href={`${import.meta.env.VITE_API_URL || ''}/api/auth/bungie/link`}
+              href={`${import.meta.env.VITE_API_URL || ''}/api/auth/bungie/link?token=${localStorage.getItem('token')}`}
               className="bg-brand-card border border-brand-border hover:border-brand-accent text-brand-text text-sm px-4 py-2 rounded transition-colors flex-shrink-0"
             >
               {bungieDisplayName ? 'Re-link' : 'Link Bungie'}
