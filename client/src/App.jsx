@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage'
 import ProfilePage from './pages/ProfilePage'
 import EditProfilePage from './pages/EditProfilePage'
 import PlayerListPage from './pages/PlayerListPage'
+import AboutPage from './pages/AboutPage'
 
 // Redirects logged-out users away from protected pages
 function PrivateRoute({ children }) {
@@ -24,6 +25,7 @@ function AppRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/players" element={<PlayerListPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route
           path="/profile/edit"

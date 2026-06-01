@@ -27,6 +27,12 @@ export default function Navbar() {
           >
             Find Players
           </Link>
+          <Link
+            to="/about"
+            className="text-brand-muted hover:text-brand-text transition-colors text-sm font-medium"
+          >
+            About
+          </Link>
 
           {user ? (
             <>
