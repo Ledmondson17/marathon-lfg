@@ -325,34 +325,6 @@ export default function EditProfilePage() {
             </div>
           </div>
 
-          {/* Bungie Account */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-sm font-semibold text-brand-text">Bungie Account</h2>
-                {bungieDisplayName ? (
-                  <p className="text-brand-muted text-xs mt-0.5">
-                    Linked as <span className="text-brand-accent">{bungieDisplayName}</span>
-                  </p>
-                ) : (
-                  <p className="text-brand-muted text-xs mt-0.5">Link your account to show Marathon stats on your profile</p>
-                )}
-              </div>
-              <a
-                href={`${import.meta.env.VITE_API_URL || ''}/api/auth/bungie/link`}
-                className="bg-brand-surface border border-brand-border hover:border-brand-accent text-brand-text text-sm px-4 py-2 rounded transition-colors flex-shrink-0"
-              >
-                {bungieDisplayName ? 'Re-link' : 'Link Bungie'}
-              </a>
-            </div>
-            {bungieStatus === 'linked' && (
-              <p className="text-green-400 text-xs mt-3">✓ Bungie account linked successfully!</p>
-            )}
-            {bungieStatus === 'error' && (
-              <p className="text-red-400 text-xs mt-3">Something went wrong linking your Bungie account. Please try again.</p>
-            )}
-          </div>
-
           <button type="submit" disabled={saving}
             className="w-full bg-brand-accent hover:bg-brand-accentHover disabled:opacity-50 text-white py-3 rounded font-semibold transition-colors">
             {saving ? 'Saving...' : 'Save Profile'}
@@ -416,6 +388,35 @@ export default function EditProfilePage() {
                 </div>
               ))}
             </div>
+          )}
+        </div>
+
+      </div>
+        {/* Bungie Account */}
+        <div className="mt-6 bg-brand-surface border border-brand-border rounded-xl p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-sm font-semibold text-brand-text">Bungie Account</h2>
+              {bungieDisplayName ? (
+                <p className="text-brand-muted text-xs mt-0.5">
+                  Linked as <span className="text-brand-accent">{bungieDisplayName}</span>
+                </p>
+              ) : (
+                <p className="text-brand-muted text-xs mt-0.5">Link your account to show Marathon stats on your profile</p>
+              )}
+            </div>
+            <a
+              href={`${import.meta.env.VITE_API_URL || ''}/api/auth/bungie/link`}
+              className="bg-brand-card border border-brand-border hover:border-brand-accent text-brand-text text-sm px-4 py-2 rounded transition-colors flex-shrink-0"
+            >
+              {bungieDisplayName ? 'Re-link' : 'Link Bungie'}
+            </a>
+          </div>
+          {bungieStatus === 'linked' && (
+            <p className="text-green-400 text-xs mt-3">✓ Bungie account linked successfully!</p>
+          )}
+          {bungieStatus === 'error' && (
+            <p className="text-red-400 text-xs mt-3">Something went wrong linking your Bungie account. Please try again.</p>
           )}
         </div>
 
