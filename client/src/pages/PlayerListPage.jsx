@@ -9,7 +9,7 @@ const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }
 export default function PlayerListPage() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({ platform: '', class: '', search: '' })
+  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '' })
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -18,6 +18,7 @@ export default function PlayerListPage() {
         if (filters.platform) params.platform = filters.platform
         if (filters.class) params.class = filters.class
         if (filters.search) params.search = filters.search
+        if (filters.kd) params.kd = filters.kd
         const res = await axios.get('/api/users', { params })
         setPlayers(res.data)
       } catch {
@@ -59,6 +60,18 @@ export default function PlayerListPage() {
           >
             <option value="">All Classes</option>
             {MARATHON_CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select
+            value={filters.kd}
+            onChange={(e) => setFilters({ ...filters, kd: e.target.value })}
+            className="bg-brand-surface border border-brand-border rounded px-4 py-2 text-brand-text focus:outline-none focus:border-brand-accent transition-colors text-sm"
+          >
+            <option value="">All K/D</option>
+            <option value="0-1.0">0 – 1.0 K/D</option>
+            <option value="1.1-1.29">1.1 – 1.29 K/D</option>
+            <option value="1.3-1.69">1.3 – 1.69 K/D</option>
+            <option value="1.7-1.99">1.7 – 1.99 K/D</option>
+            <option value="2.0+">2.0+ K/D</option>
           </select>
         </div>
 
@@ -104,6 +117,11 @@ export default function PlayerListPage() {
 
                 {player.bio && (
                   <p className="text-brand-muted text-sm line-clamp-2">{player.bio}</p>
+                )}
+                {player.bungie_kd != null && (
+                  <p className="text-brand-muted text-xs mt-2">
+                    K/D <span className="text-brand-accent font-semibold">{player.bungie_kd}</span>
+                  </p>
                 )}
 
                 {player.platforms?.length > 0 && (

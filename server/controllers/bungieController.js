@@ -87,6 +87,19 @@ export async function handleBungieCallback(req, res) {
     const membershipType = primary?.membershipType || 254 // 254 = BungieNet fallback
     const displayName    = bungieNetUser?.uniqueName || bungieNetUser?.displayName || 'Unknown'
 
+    // Try to fetch K/D immediately so it's ready for filtering
+    let kd = null
+    try {
+      const statsData = await bungieGet(
+        `/Destiny2/${membershipType}/Account/${membershipId}/Stats/`,
+        accessToken
+      )
+      const kdRaw = statsData.Response?.mergedAllCharacters?.results?.allPvP?.allTime?.killsDeathsRatio?.basic?.value
+      if (kdRaw != null) kd = parseFloat(kdRaw.toFixed(2))
+    } catch {
+      // K/D fetch failed — not critical, just leave it null
+    }
+
     // Save everything to the database
     await pool.query(
       `UPDATE users SET
@@ -95,9 +108,10 @@ export async function handleBungieCallback(req, res) {
         bungie_display_name     = $3,
         bungie_access_token     = $4,
         bungie_refresh_token    = $5,
-        bungie_token_expires_at = $6
-       WHERE id = $7`,
-      [membershipId, membershipType, displayName, accessToken, refreshToken, expiresAt, userId]
+        bungie_token_expires_at = $6,
+        bungie_kd               = $7
+       WHERE id = $8`,
+      [membershipId, membershipType, displayName, accessToken, refreshToken, expiresAt, kd, userId]
     )
 
     res.redirect(`${CLIENT_URL}/profile/edit?bungie=linked`)

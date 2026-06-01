@@ -2,10 +2,10 @@ import pool from '../db/pool.js'
 import { cloudinary, uploadToCloudinary } from '../middleware/upload.js'
 
 // Public columns safe to return to the frontend
-const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, created_at'
+const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, bungie_kd, created_at'
 
 export async function getPlayers(req, res) {
-  const { platform, class: cls, search } = req.query
+  const { platform, class: cls, search, kd } = req.query
   let query = `SELECT ${PUBLIC_FIELDS} FROM users`
   const conditions = []
   const values = []
@@ -21,6 +21,20 @@ export async function getPlayers(req, res) {
   if (search) {
     values.push(`%${search}%`)
     conditions.push(`username ILIKE $${values.length}`)
+  }
+  if (kd) {
+    // Players with no Bungie account (NULL k/d) are treated as 0-1.0
+    if (kd === '0-1.0') {
+      conditions.push(`(bungie_kd IS NULL OR bungie_kd <= 1.0)`)
+    } else if (kd === '1.1-1.29') {
+      conditions.push(`(bungie_kd >= 1.1 AND bungie_kd <= 1.29)`)
+    } else if (kd === '1.3-1.69') {
+      conditions.push(`(bungie_kd >= 1.3 AND bungie_kd <= 1.69)`)
+    } else if (kd === '1.7-1.99') {
+      conditions.push(`(bungie_kd >= 1.7 AND bungie_kd <= 1.99)`)
+    } else if (kd === '2.0+') {
+      conditions.push(`bungie_kd >= 2.0`)
+    }
   }
 
   if (conditions.length > 0) {
