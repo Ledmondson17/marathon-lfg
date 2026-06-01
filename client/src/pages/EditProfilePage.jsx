@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
+import SalvagePicker from '../components/SalvagePicker'
 
 const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 const PLATFORMS = ['ps5', 'xbox', 'pc']
@@ -34,6 +35,7 @@ export default function EditProfilePage() {
     platforms: [],
     top_classes: [],
     socials: { twitch: '', discord: '', youtube: '', instagram: '', twitter: '' },
+    looking_for_salvage: [],
   })
 
   // Check if Bungie just redirected back with a result
@@ -60,6 +62,7 @@ export default function EditProfilePage() {
           platforms: p.platforms || [],
           top_classes: p.top_classes || [],
           socials: { twitch: '', discord: '', youtube: '', instagram: '', twitter: '', ...p.socials },
+          looking_for_salvage: p.looking_for_salvage || [],
         })
       } catch {
         // No existing profile yet
@@ -303,6 +306,18 @@ export default function EditProfilePage() {
             <label className={labelClass}>Availability</label>
             <input type="text" name="availability" value={form.availability} onChange={handleChange}
               className={inputClass} placeholder="e.g. Weeknights 8pm-midnight, weekends flexible" />
+          </div>
+
+          {/* Currently Hunting */}
+          <div>
+            <label className={labelClass}>
+              Currently Hunting
+              <span className="font-normal ml-1">(salvage you're looking for)</span>
+            </label>
+            <SalvagePicker
+              selected={form.looking_for_salvage}
+              onChange={(val) => setForm({ ...form, looking_for_salvage: val })}
+            />
           </div>
 
           {/* Socials */}

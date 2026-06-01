@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
+import { getSalvageTier, TIER_COLORS } from '../data/salvage'
 
 const CLASS_COLORS = {
   Recon: 'bg-blue-900/40 border-blue-700 text-blue-300',
@@ -308,6 +309,25 @@ export default function ProfilePage() {
           <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-3">Gaming Philosophy & Playstyle</h2>
             <p className="text-brand-text leading-relaxed whitespace-pre-wrap">{profile.playstyle}</p>
+          </div>
+        )}
+
+        {/* Currently Hunting */}
+        {profile.looking_for_salvage?.length > 0 && (
+          <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-4">
+              Currently Hunting
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {profile.looking_for_salvage.map(item => {
+                const tier = getSalvageTier(item)
+                return (
+                  <span key={item} className={`border rounded-full px-3 py-1 text-xs font-medium ${TIER_COLORS[tier]}`}>
+                    {item}
+                  </span>
+                )
+              })}
+            </div>
           </div>
         )}
 

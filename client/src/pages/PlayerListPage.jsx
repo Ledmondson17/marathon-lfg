@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from '../api/axios'
+import { ALL_SALVAGE, getSalvageTier, TIER_COLORS } from '../data/salvage'
 
 const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 const PLATFORMS = ['ps5', 'xbox', 'pc']
@@ -9,7 +10,7 @@ const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }
 export default function PlayerListPage() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '' })
+  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '', salvage: '' })
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -20,6 +21,7 @@ export default function PlayerListPage() {
         if (filters.search) params.search = filters.search
         if (filters.kd) params.kd = filters.kd
         if (filters.timezone) params.timezone = filters.timezone
+        if (filters.salvage) params.salvage = filters.salvage
         const res = await axios.get('/api/users', { params })
         setPlayers(res.data)
       } catch {
@@ -89,6 +91,22 @@ export default function PlayerListPage() {
             <option value="JST">JST — Japan</option>
             <option value="AEST">AEST — Australia Eastern</option>
           </select>
+          <select
+            value={filters.salvage}
+            onChange={(e) => setFilters({ ...filters, salvage: e.target.value })}
+            className="bg-brand-surface border border-brand-border rounded px-4 py-2 text-brand-text focus:outline-none focus:border-brand-accent transition-colors text-sm"
+          >
+            <option value="">Hunting Any Salvage</option>
+            {['Exotic', 'Rare', 'Uncommon', 'Common', 'Unstable'].map(tier => (
+              <optgroup key={tier} label={`— ${tier} —`}>
+                {ALL_SALVAGE
+                  .filter(item => getSalvageTier(item) === tier)
+                  .map(item => (
+                    <option key={item} value={item}>{item}</option>
+                  ))}
+              </optgroup>
+            ))}
+          </select>
         </div>
 
         {/* Player cards */}
@@ -140,6 +158,19 @@ export default function PlayerListPage() {
                   <p className="text-brand-muted text-xs mt-2">
                     K/D <span className="text-brand-accent font-semibold">{player.bungie_kd}</span>
                   </p>
+                )}
+                {player.looking_for_salvage?.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    <span className="text-brand-muted text-xs mr-1">Hunting:</span>
+                    {player.looking_for_salvage.slice(0, 3).map(item => (
+                      <span key={item} className={`text-xs border rounded-full px-2 py-0.5 ${TIER_COLORS[getSalvageTier(item)]}`}>
+                        {item}
+                      </span>
+                    ))}
+                    {player.looking_for_salvage.length > 3 && (
+                      <span className="text-brand-muted text-xs">+{player.looking_for_salvage.length - 3} more</span>
+                    )}
+                  </div>
                 )}
 
                 {player.platforms?.length > 0 && (

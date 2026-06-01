@@ -2,10 +2,10 @@ import pool from '../db/pool.js'
 import { cloudinary, uploadToCloudinary } from '../middleware/upload.js'
 
 // Public columns safe to return to the frontend
-const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, bungie_kd, created_at'
+const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, bungie_kd, looking_for_salvage, created_at'
 
 export async function getPlayers(req, res) {
-  const { platform, class: cls, search, kd, timezone } = req.query
+  const { platform, class: cls, search, kd, timezone, salvage } = req.query
   let query = `SELECT ${PUBLIC_FIELDS} FROM users`
   const conditions = []
   const values = []
@@ -25,6 +25,10 @@ export async function getPlayers(req, res) {
   if (timezone) {
     values.push(timezone)
     conditions.push(`timezone = $${values.length}`)
+  }
+  if (salvage) {
+    values.push(salvage)
+    conditions.push(`$${values.length} = ANY(looking_for_salvage)`)
   }
   if (kd) {
     // Players with no Bungie account (NULL k/d) are treated as 0-1.0
@@ -97,7 +101,7 @@ export async function getProfile(req, res) {
 }
 
 export async function updateProfile(req, res) {
-  const { bio, playstyle, availability, region, timezone, platforms, top_classes, socials } = req.body
+  const { bio, playstyle, availability, region, timezone, platforms, top_classes, socials, looking_for_salvage } = req.body
 
   // Validate top_classes max 3
   if (top_classes && top_classes.length > 3) {
@@ -113,10 +117,10 @@ export async function updateProfile(req, res) {
     const result = await pool.query(
       `UPDATE users SET
         bio = $1, playstyle = $2, availability = $3, region = $4, timezone = $5,
-        platforms = $6, top_classes = $7, socials = $8
-       WHERE id = $9
+        platforms = $6, top_classes = $7, socials = $8, looking_for_salvage = $9
+       WHERE id = $10
        RETURNING ${PUBLIC_FIELDS}`,
-      [bio, playstyle, availability, region, timezone, platforms, top_classes, socials, req.user.id]
+      [bio, playstyle, availability, region, timezone, platforms, top_classes, socials, looking_for_salvage, req.user.id]
     )
     res.json(result.rows[0])
   } catch (err) {
