@@ -391,7 +391,6 @@ export default function EditProfilePage() {
           )}
         </div>
 
-      </div>
         {/* Bungie Account */}
         <div className="mt-6 bg-brand-surface border border-brand-border rounded-xl p-6">
           <div className="flex items-center justify-between gap-4">
