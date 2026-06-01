@@ -97,6 +97,7 @@ export default function ProfilePage() {
 
   // Fetch Bungie stats only if viewing your own profile (requires auth token)
   useEffect(() => {
+    setBungieStats(null) // Always clear when navigating to a different profile
     const fetchStats = async () => {
       const token = localStorage.getItem('token')
       if (!token || !currentUser || currentUser.username !== username) return
