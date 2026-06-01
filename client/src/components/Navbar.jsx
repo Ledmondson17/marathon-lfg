@@ -37,8 +37,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="text-xl font-bold tracking-wide">
-          <span className="text-brand-accent">MARATHON</span>
-          <span className="text-brand-text"> LFG</span>
+          <span className="text-brand-accent">SHELL</span>
+          <span className="text-brand-text"> SEARCHER</span>
         </Link>
 
         {/* Nav links */}

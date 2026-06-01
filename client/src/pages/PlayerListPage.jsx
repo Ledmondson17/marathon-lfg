@@ -35,7 +35,7 @@ export default function PlayerListPage() {
     <main className="min-h-screen bg-brand-bg px-4 py-10">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Find Players</h1>
-        <p className="text-brand-muted mb-8">Browse Marathon players and find your next squad</p>
+        <p className="text-brand-muted mb-8">Browse Marathon players on Shell Searcher and find your next squad</p>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-8">

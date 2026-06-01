@@ -5,7 +5,7 @@ export default function AboutPage() {
 
         {/* Header */}
         <p className="text-brand-accent text-xs font-semibold uppercase tracking-widest mb-4">
-          About Marathon LFG
+          About Shell Searcher
         </p>
         <h1 className="text-4xl font-bold text-brand-text leading-tight mb-16">
           Why this site exists.
@@ -32,7 +32,7 @@ export default function AboutPage() {
         {/* Divider */}
         <div className="border-t border-brand-border mt-16 pt-10">
           <p className="text-brand-muted text-sm">
-            Marathon LFG is an independent fan-made site and is not affiliated with
+            Shell Searcher is an independent fan-made site and is not affiliated with
             Bungie, Inc.
           </p>
         </div>

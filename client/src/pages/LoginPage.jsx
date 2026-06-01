@@ -33,7 +33,7 @@ export default function LoginPage() {
     <main className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-brand-surface border border-brand-border rounded-xl p-8">
         <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
-        <p className="text-brand-muted text-sm mb-8">Log in to your Marathon LFG account</p>
+        <p className="text-brand-muted text-sm mb-8">Log in to your Shell Searcher account</p>
 
         {error && (
           <div className="bg-red-900/30 border border-red-700 text-red-300 rounded px-4 py-3 mb-6 text-sm">

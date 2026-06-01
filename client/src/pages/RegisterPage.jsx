@@ -47,7 +47,7 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-brand-surface border border-brand-border rounded-xl p-8">
         <h1 className="text-2xl font-bold mb-2">Create your profile</h1>
-        <p className="text-brand-muted text-sm mb-8">Join Marathon LFG and find your squad</p>
+        <p className="text-brand-muted text-sm mb-8">Join Shell Searcher and find your squad</p>
 
         {error && (
           <div className="bg-red-900/30 border border-red-700 text-red-300 rounded px-4 py-3 mb-6 text-sm">
