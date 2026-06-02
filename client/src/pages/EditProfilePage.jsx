@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import SalvagePicker from '../components/SalvagePicker'
+import { ACTIVITIES } from '../data/activities'
 
 const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 const PLATFORMS = ['ps5', 'xbox', 'pc']
@@ -36,6 +37,7 @@ export default function EditProfilePage() {
     top_classes: [],
     socials: { twitch: '', discord: '', youtube: '', instagram: '', twitter: '' },
     looking_for_salvage: [],
+    preferred_activity: '',
   })
 
   // Check if Bungie just redirected back with a result
@@ -63,6 +65,7 @@ export default function EditProfilePage() {
           top_classes: p.top_classes || [],
           socials: { twitch: '', discord: '', youtube: '', instagram: '', twitter: '', ...p.socials },
           looking_for_salvage: p.looking_for_salvage || [],
+          preferred_activity: p.preferred_activity || '',
         })
       } catch {
         // No existing profile yet
@@ -265,6 +268,42 @@ export default function EditProfilePage() {
                   </button>
                 )
               })}
+            </div>
+          </div>
+
+          {/* Preferred Session Activity */}
+          <div>
+            <label className={labelClass}>Preferred Session Activity</label>
+            <div className="space-y-3">
+              {ACTIVITIES.map((activity) => (
+                <label key={activity.id}
+                  className={`flex items-start gap-4 border rounded-xl p-4 cursor-pointer transition-colors ${
+                    form.preferred_activity === activity.id
+                      ? `${activity.color} border-opacity-100`
+                      : 'bg-brand-card border-brand-border hover:border-brand-accent/50'
+                  }`}>
+                  <input
+                    type="radio"
+                    name="preferred_activity"
+                    value={activity.id}
+                    checked={form.preferred_activity === activity.id}
+                    onChange={(e) => setForm({ ...form, preferred_activity: e.target.value })}
+                    className="mt-0.5 accent-orange-500 flex-shrink-0"
+                  />
+                  <div>
+                    <p className="text-brand-text font-medium text-sm">{activity.label}</p>
+                    <p className="text-brand-muted text-xs mt-1 leading-relaxed">{activity.description}</p>
+                  </div>
+                </label>
+              ))}
+              {/* Allow deselecting */}
+              {form.preferred_activity && (
+                <button type="button"
+                  onClick={() => setForm({ ...form, preferred_activity: '' })}
+                  className="text-brand-muted hover:text-brand-text text-xs transition-colors">
+                  Clear selection
+                </button>
+              )}
             </div>
           </div>
 

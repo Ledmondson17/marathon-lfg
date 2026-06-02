@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import { getSalvageTier, TIER_COLORS } from '../data/salvage'
+import { getActivity } from '../data/activities'
 
 const CLASS_COLORS = {
   Recon: 'bg-blue-900/40 border-blue-700 text-blue-300',
@@ -311,6 +312,22 @@ export default function ProfilePage() {
             <p className="text-brand-text leading-relaxed whitespace-pre-wrap">{profile.playstyle}</p>
           </div>
         )}
+
+        {/* Preferred Activity */}
+        {profile.preferred_activity && (() => {
+          const activity = getActivity(profile.preferred_activity)
+          return activity ? (
+            <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-3">
+                Preferred Session Activity
+              </h2>
+              <div className={`inline-flex flex-col border rounded-xl px-4 py-3 ${activity.color}`}>
+                <span className="font-semibold text-sm">{activity.label}</span>
+                <span className="text-xs mt-1 opacity-80 leading-relaxed">{activity.description}</span>
+              </div>
+            </div>
+          ) : null
+        })()}
 
         {/* Currently Hunting */}
         {profile.looking_for_salvage?.length > 0 && (
