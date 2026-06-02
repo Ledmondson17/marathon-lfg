@@ -153,27 +153,26 @@ export default function PlayerListPage() {
                   </div>
                 </div>
 
-                {player.top_classes?.length > 0 && (
-                  <div className="flex gap-1.5 flex-wrap mb-3">
-                    {player.top_classes.map((cls) => (
-                      <span key={cls} className="bg-brand-card border border-brand-border text-brand-muted text-xs px-2 py-0.5 rounded">
-                        {cls}
+                {/* Activity badge + classes on the same row */}
+                <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                  {player.preferred_activity && (() => {
+                    const activity = getActivity(player.preferred_activity)
+                    return activity ? (
+                      <span className={`text-xs border rounded-full px-2.5 py-0.5 font-medium ${activity.badge}`}>
+                        {activity.label}
                       </span>
-                    ))}
-                  </div>
-                )}
+                    ) : null
+                  })()}
+                  {player.top_classes?.map((cls) => (
+                    <span key={cls} className="bg-brand-card border border-brand-border text-brand-muted text-xs px-2 py-0.5 rounded">
+                      {cls}
+                    </span>
+                  ))}
+                </div>
 
                 {(player.playstyle || player.bio) && (
                   <p className="text-brand-muted text-sm line-clamp-2">{player.playstyle || player.bio}</p>
                 )}
-                {player.preferred_activity && (() => {
-                  const activity = getActivity(player.preferred_activity)
-                  return activity ? (
-                    <span className={`inline-block text-xs border rounded-full px-2.5 py-0.5 mt-1 mb-1 ${activity.badge}`}>
-                      {activity.label}
-                    </span>
-                  ) : null
-                })()}
                 {player.bungie_kd != null && (
                   <p className="text-brand-muted text-xs mt-2">
                     K/D <span className="text-brand-accent font-semibold">{player.bungie_kd}</span>
