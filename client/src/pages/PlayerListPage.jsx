@@ -151,8 +151,8 @@ export default function PlayerListPage() {
                   </div>
                 )}
 
-                {player.bio && (
-                  <p className="text-brand-muted text-sm line-clamp-2">{player.bio}</p>
+                {(player.playstyle || player.bio) && (
+                  <p className="text-brand-muted text-sm line-clamp-2">{player.playstyle || player.bio}</p>
                 )}
                 {player.bungie_kd != null && (
                   <p className="text-brand-muted text-xs mt-2">
