@@ -69,20 +69,27 @@ export default function ConnectionsPage() {
             <div className="space-y-3">
               {pending.map((c) => (
                 <div key={c.id} className="bg-brand-surface border border-brand-border rounded-xl p-4 flex items-center justify-between gap-4">
-                  <Link to={`/profile/${c.other_username}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                    <div className="w-10 h-10 rounded-full bg-brand-card border border-brand-border overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-brand-muted">
-                      {c.other_avatar
-                        ? <img src={c.other_avatar} alt={c.other_username} className="w-full h-full object-cover" />
-                        : c.other_username[0].toUpperCase()
-                      }
-                    </div>
-                    <div>
-                      <p className="text-brand-text font-medium text-sm">{c.other_username}</p>
-                      {c.other_region && (
-                        <p className="text-brand-muted text-xs">{c.other_region} · {c.other_timezone}</p>
-                      )}
-                    </div>
-                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <Link to={`/profile/${c.other_username}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity mb-2">
+                      <div className="w-10 h-10 rounded-full bg-brand-card border border-brand-border overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-brand-muted">
+                        {c.other_avatar
+                          ? <img src={c.other_avatar} alt={c.other_username} className="w-full h-full object-cover" />
+                          : c.other_username[0].toUpperCase()
+                        }
+                      </div>
+                      <div>
+                        <p className="text-brand-text font-medium text-sm">{c.other_username}</p>
+                        {c.other_region && (
+                          <p className="text-brand-muted text-xs">{c.other_region} · {c.other_timezone}</p>
+                        )}
+                      </div>
+                    </Link>
+                    {c.message && (
+                      <p className="text-brand-muted text-xs italic bg-brand-card border border-brand-border rounded-lg px-3 py-2 ml-13">
+                        "{c.message}"
+                      </p>
+                    )}
+                  </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <button onClick={() => respond(c.id, 'accept')}
                       className="bg-brand-accent hover:bg-brand-accentHover text-white text-sm px-4 py-1.5 rounded font-medium transition-colors">

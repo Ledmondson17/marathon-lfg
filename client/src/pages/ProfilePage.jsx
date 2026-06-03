@@ -36,6 +36,8 @@ export default function ProfilePage() {
   const [bungieStats, setBungieStats] = useState(null)
   const [connStatus, setConnStatus] = useState(null) // { id, status, i_sent } or null
   const [connLoading, setConnLoading] = useState(false)
+  const [showMsgBox, setShowMsgBox] = useState(false)
+  const [connMessage, setConnMessage] = useState('')
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -72,12 +74,15 @@ export default function ProfilePage() {
     setConnLoading(true)
     try {
       const token = localStorage.getItem('token')
-      const res = await axios.post('/api/connections', { recipient_username: username }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await axios.post('/api/connections',
+        { recipient_username: username, message: connMessage.trim() || null },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
       setConnStatus({ id: res.data.id, status: 'pending', i_sent: true })
+      setShowMsgBox(false)
+      setConnMessage('')
     } catch {
-      // Already requested or error — refresh status
+      // Already requested or error
     } finally {
       setConnLoading(false)
     }
@@ -174,11 +179,34 @@ export default function ProfilePage() {
           ) : currentUser && connStatus && (
             <div className="flex flex-col items-end gap-1 flex-shrink-0">
               {/* No connection yet */}
-              {connStatus.status === 'none' && (
-                <button onClick={handleRunTogether} disabled={connLoading}
-                  className="bg-brand-accent hover:bg-brand-accentHover disabled:opacity-50 text-white text-sm px-4 py-2 rounded font-medium transition-colors">
-                  {connLoading ? 'Sending...' : 'Run Together'}
+              {connStatus.status === 'none' && !showMsgBox && (
+                <button onClick={() => setShowMsgBox(true)}
+                  className="bg-brand-accent hover:bg-brand-accentHover text-white text-sm px-4 py-2 rounded font-medium transition-colors">
+                  Run Together
                 </button>
+              )}
+              {connStatus.status === 'none' && showMsgBox && (
+                <div className="flex flex-col gap-2 w-56">
+                  <textarea
+                    value={connMessage}
+                    onChange={e => setConnMessage(e.target.value)}
+                    maxLength={200}
+                    rows={3}
+                    placeholder="Add a message... (optional)"
+                    className="w-full bg-brand-card border border-brand-border rounded px-3 py-2 text-brand-text placeholder-brand-muted text-xs focus:outline-none focus:border-brand-accent transition-colors resize-none"
+                  />
+                  <p className="text-brand-muted text-xs text-right">{connMessage.length}/200</p>
+                  <div className="flex gap-2">
+                    <button onClick={handleRunTogether} disabled={connLoading}
+                      className="flex-1 bg-brand-accent hover:bg-brand-accentHover disabled:opacity-50 text-white text-xs px-3 py-1.5 rounded font-medium transition-colors">
+                      {connLoading ? 'Sending...' : 'Send Request'}
+                    </button>
+                    <button onClick={() => { setShowMsgBox(false); setConnMessage('') }}
+                      className="bg-brand-card border border-brand-border text-brand-muted hover:text-brand-text text-xs px-3 py-1.5 rounded transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               )}
               {/* Request sent, waiting */}
               {connStatus.status === 'pending' && connStatus.i_sent && (

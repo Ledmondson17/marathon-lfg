@@ -2,7 +2,7 @@ import pool from '../db/pool.js'
 
 // Send a connection request to another player
 export async function sendRequest(req, res) {
-  const { recipient_username } = req.body
+  const { recipient_username, message } = req.body
 
   try {
     // Look up the recipient's ID from their username
@@ -30,9 +30,12 @@ export async function sendRequest(req, res) {
       return res.status(409).json({ message: 'A connection request already exists.' })
     }
 
+    // Trim message and enforce 200 char limit
+    const trimmed = message?.trim().slice(0, 200) || null
+
     const result = await pool.query(
-      'INSERT INTO connections (requester_id, recipient_id) VALUES ($1, $2) RETURNING id',
-      [req.user.id, recipientId]
+      'INSERT INTO connections (requester_id, recipient_id, message) VALUES ($1, $2, $3) RETURNING id',
+      [req.user.id, recipientId, trimmed]
     )
     res.status(201).json({ id: result.rows[0].id, message: 'Request sent!' })
   } catch (err) {
@@ -58,7 +61,8 @@ export async function getConnections(req, res) {
         CASE WHEN c.requester_id = $1 THEN u2.region ELSE u1.region END AS other_region,
         CASE WHEN c.requester_id = $1 THEN u2.timezone ELSE u1.timezone END AS other_timezone,
         -- Was the current user the one who sent the request?
-        CASE WHEN c.requester_id = $1 THEN true ELSE false END AS i_sent
+        CASE WHEN c.requester_id = $1 THEN true ELSE false END AS i_sent,
+        c.message
        FROM connections c
        JOIN users u1 ON u1.id = c.requester_id
        JOIN users u2 ON u2.id = c.recipient_id
