@@ -460,13 +460,26 @@ export default function ProfilePage() {
             <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-4">Clips & Screenshots</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {profile.media.map((item) => (
-                <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={item.url}
-                    alt="gameplay"
-                    className="w-full aspect-video object-cover rounded-lg border border-brand-border hover:border-brand-accent transition-colors"
-                  />
-                </a>
+                <div key={item.id}>
+                  {item.resource_type === 'video' ? (
+                    <video
+                      src={item.url}
+                      className="w-full aspect-video object-cover rounded-lg border border-brand-border"
+                      controls
+                      preload="metadata"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={item.url}
+                        alt="gameplay"
+                        loading="lazy"
+                        className="w-full aspect-video object-cover rounded-lg border border-brand-border hover:border-brand-accent transition-colors"
+                      />
+                    </a>
+                  )}
+                </div>
               ))}
             </div>
           </div>

@@ -436,7 +436,7 @@ export default function EditProfilePage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-brand-text">Clips & Screenshots</h2>
-              <p className="text-brand-muted text-xs mt-0.5">{media.length}/10 uploaded · JPG, PNG, GIF, WebP · Max 10MB each</p>
+              <p className="text-brand-muted text-xs mt-0.5">{media.length}/10 uploaded · JPG, PNG, GIF, WebP, MP4, WebM · Max 100MB each</p>
             </div>
             {media.length < 10 && (
               <button
@@ -453,7 +453,7 @@ export default function EditProfilePage() {
           <input
             ref={mediaInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/gif,image/webp"
+            accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/webm"
             multiple
             onChange={handleMediaUpload}
             className="hidden"
@@ -471,11 +471,20 @@ export default function EditProfilePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {media.map((item) => (
                 <div key={item.id} className="relative group">
-                  <img
-                    src={item.url}
-                    alt="gameplay"
-                    className="w-full aspect-video object-cover rounded-lg border border-brand-border"
-                  />
+                  {item.resource_type === 'video' ? (
+                    <video
+                      src={item.url}
+                      className="w-full aspect-video object-cover rounded-lg border border-brand-border"
+                      controls
+                      preload="metadata"
+                    />
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt="gameplay"
+                      className="w-full aspect-video object-cover rounded-lg border border-brand-border"
+                    />
+                  )}
                   {/* Delete button appears on hover */}
                   <button
                     type="button"

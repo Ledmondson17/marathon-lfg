@@ -85,7 +85,7 @@ export async function getProfile(req, res) {
 
     // Attach media uploads
     const mediaResult = await pool.query(
-      'SELECT id, url FROM media WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT id, url, resource_type FROM media WHERE user_id = $1 ORDER BY created_at DESC',
       [user.id]
     )
     user.media = mediaResult.rows
@@ -183,10 +183,13 @@ export async function uploadMedia(req, res) {
   }
 
   try {
-    const { url, public_id } = await uploadToCloudinary(req.file.buffer)
+    const isVideo = req.file.mimetype.startsWith('video/')
+    const { url, public_id, resource_type } = await uploadToCloudinary(req.file.buffer, {
+      resource_type: isVideo ? 'video' : 'image',
+    })
     const result = await pool.query(
-      'INSERT INTO media (user_id, url, public_id) VALUES ($1, $2, $3) RETURNING id, url',
-      [req.user.id, url, public_id]
+      'INSERT INTO media (user_id, url, public_id, resource_type) VALUES ($1, $2, $3, $4) RETURNING id, url, resource_type',
+      [req.user.id, url, public_id, resource_type]
     )
     res.status(201).json(result.rows[0])
   } catch (err) {
