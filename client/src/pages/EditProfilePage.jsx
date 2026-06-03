@@ -42,6 +42,7 @@ export default function EditProfilePage() {
     preferred_activity: '',
     active_contract: '',
     preferred_maps: [],
+    has_mic: null,
   })
 
   // Check if Bungie just redirected back with a result
@@ -72,6 +73,7 @@ export default function EditProfilePage() {
           preferred_activity: p.preferred_activity || '',
           active_contract: p.active_contract || '',
           preferred_maps: p.preferred_maps || [],
+          has_mic: p.has_mic ?? null,
         })
       } catch {
         // No existing profile yet
@@ -328,6 +330,33 @@ export default function EditProfilePage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Mic */}
+          <div>
+            <label className={labelClass}>Microphone</label>
+            <div className="flex gap-3">
+              {[
+                { value: true,  label: '🎙 I have a mic' },
+                { value: false, label: '🔇 No mic right now' },
+              ].map(({ value, label }) => (
+                <button key={String(value)} type="button"
+                  onClick={() => setForm(prev => ({
+                    ...prev,
+                    has_mic: prev.has_mic === value ? null : value
+                  }))}
+                  className={`border rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                    form.has_mic === value
+                      ? value
+                        ? 'bg-green-900/40 border-green-500 text-green-300'
+                        : 'bg-red-900/40 border-red-700 text-red-300'
+                      : 'bg-brand-card border-brand-border text-brand-muted hover:border-brand-accent/50'
+                  }`}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p className="text-brand-muted text-xs mt-1.5">Click again to clear your selection</p>
           </div>
 
           {/* Region & Timezone */}

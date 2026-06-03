@@ -144,13 +144,23 @@ export default function ProfilePage() {
               {profile.region && (
                 <p className="text-brand-muted text-sm mt-0.5">{profile.region} · {profile.timezone}</p>
               )}
-              {/* Platforms */}
-              <div className="flex gap-2 mt-2">
+              {/* Platforms + mic */}
+              <div className="flex flex-wrap gap-2 mt-2">
                 {profile.platforms?.map((p) => (
                   <span key={p} className="bg-brand-card border border-brand-border text-brand-muted text-xs px-2 py-0.5 rounded">
                     {PLATFORM_LABELS[p] || p}
                   </span>
                 ))}
+                {profile.has_mic === true && (
+                  <span className="bg-green-900/40 border border-green-600 text-green-300 text-xs px-2 py-0.5 rounded">
+                    🎙 Has Mic
+                  </span>
+                )}
+                {profile.has_mic === false && (
+                  <span className="bg-red-900/40 border border-red-700 text-red-300 text-xs px-2 py-0.5 rounded">
+                    🔇 No Mic
+                  </span>
+                )}
               </div>
             </div>
           </div>

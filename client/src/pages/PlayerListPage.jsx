@@ -13,7 +13,7 @@ const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }
 export default function PlayerListPage() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '', salvage: '', activity: '', contract: '', map: '' })
+  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '', salvage: '', activity: '', contract: '', map: '', mic: '' })
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -28,6 +28,7 @@ export default function PlayerListPage() {
         if (filters.activity) params.activity = filters.activity
         if (filters.contract) params.contract = filters.contract
         if (filters.map) params.map = filters.map
+        if (filters.mic) params.mic = filters.mic
         const res = await axios.get('/api/users', { params })
         setPlayers(res.data)
       } catch {
@@ -96,6 +97,15 @@ export default function PlayerListPage() {
             <option value="CET">CET — Central European</option>
             <option value="JST">JST — Japan</option>
             <option value="AEST">AEST — Australia Eastern</option>
+          </select>
+          <select
+            value={filters.mic}
+            onChange={(e) => setFilters({ ...filters, mic: e.target.value })}
+            className="bg-brand-surface border border-brand-border rounded px-4 py-2 text-brand-text focus:outline-none focus:border-brand-accent transition-colors text-sm"
+          >
+            <option value="">🎙 Any Mic Status</option>
+            <option value="true">🎙 Has Mic</option>
+            <option value="false">🔇 No Mic</option>
           </select>
           <select
             value={filters.map}
@@ -231,6 +241,16 @@ export default function PlayerListPage() {
                   </div>
                 )}
 
+                {player.has_mic === true && (
+                  <span className="inline-block text-xs bg-green-900/40 border border-green-600 text-green-300 rounded px-2 py-0.5 mt-1">
+                    🎙 Has Mic
+                  </span>
+                )}
+                {player.has_mic === false && (
+                  <span className="inline-block text-xs bg-red-900/40 border border-red-700 text-red-300 rounded px-2 py-0.5 mt-1">
+                    🔇 No Mic
+                  </span>
+                )}
                 {player.preferred_maps?.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {player.preferred_maps.map(mapId => {
