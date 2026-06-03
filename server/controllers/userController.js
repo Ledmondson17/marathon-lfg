@@ -217,3 +217,34 @@ export async function deleteMedia(req, res) {
     res.status(500).json({ message: 'Server error.' })
   }
 }
+
+export async function deleteAccount(req, res) {
+  try {
+    // Delete all Cloudinary media first so we don't leave orphaned files
+    const mediaResult = await pool.query(
+      'SELECT public_id FROM media WHERE user_id = $1',
+      [req.user.id]
+    )
+    for (const item of mediaResult.rows) {
+      await cloudinary.uploader.destroy(item.public_id).catch(() => {})
+    }
+
+    // Delete avatar from Cloudinary if it exists
+    const userResult = await pool.query('SELECT avatar_url FROM users WHERE id = $1', [req.user.id])
+    const avatarUrl = userResult.rows[0]?.avatar_url
+    if (avatarUrl) {
+      const parts = avatarUrl.split('/')
+      const filename = parts[parts.length - 1].split('.')[0]
+      const folder = parts[parts.length - 2]
+      await cloudinary.uploader.destroy(`${folder}/${filename}`).catch(() => {})
+    }
+
+    // Deleting the user row cascades to media and connections automatically
+    await pool.query('DELETE FROM users WHERE id = $1', [req.user.id])
+
+    res.json({ message: 'Account deleted.' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error.' })
+  }
+}

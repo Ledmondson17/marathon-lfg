@@ -519,7 +519,71 @@ export default function EditProfilePage() {
           )}
         </div>
 
+        {/* Danger Zone — Delete Account */}
+        <DeleteAccountSection />
+
       </div>
     </main>
+  )
+}
+
+function DeleteAccountSection() {
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+  const [step, setStep] = useState(0) // 0 = hidden, 1 = confirm prompt, 2 = deleting
+  const [error, setError] = useState('')
+
+  const handleDelete = async () => {
+    setStep(2)
+    try {
+      const token = localStorage.getItem('token')
+      await fetch(`${import.meta.env.VITE_API_URL || ''}/api/users/me`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      logout()
+      navigate('/')
+    } catch {
+      setError('Something went wrong. Please try again.')
+      setStep(1)
+    }
+  }
+
+  return (
+    <div className="mt-6 border border-red-900 rounded-xl p-6 bg-red-950/20">
+      <h2 className="text-sm font-semibold text-red-400 mb-1">Danger Zone</h2>
+      <p className="text-brand-muted text-xs mb-4">
+        Permanently deletes your account, profile, clips, and all connections. This cannot be undone.
+      </p>
+
+      {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
+
+      {step === 0 && (
+        <button type="button" onClick={() => setStep(1)}
+          className="border border-red-700 text-red-400 hover:bg-red-900/30 text-sm px-4 py-2 rounded transition-colors">
+          Delete My Account
+        </button>
+      )}
+
+      {step === 1 && (
+        <div className="space-y-3">
+          <p className="text-red-300 text-sm font-medium">Are you sure? This is permanent and cannot be reversed.</p>
+          <div className="flex gap-3">
+            <button type="button" onClick={handleDelete}
+              className="bg-red-700 hover:bg-red-600 text-white text-sm px-5 py-2 rounded font-semibold transition-colors">
+              Yes, delete my account
+            </button>
+            <button type="button" onClick={() => setStep(0)}
+              className="bg-brand-card border border-brand-border text-brand-muted hover:text-brand-text text-sm px-5 py-2 rounded transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 2 && (
+        <p className="text-brand-muted text-sm">Deleting your account...</p>
+      )}
+    </div>
   )
 }

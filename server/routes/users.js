@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getPlayers, getProfile, updateProfile, uploadAvatar, uploadMedia, deleteMedia } from '../controllers/userController.js'
+import { getPlayers, getProfile, updateProfile, uploadAvatar, uploadMedia, deleteMedia, deleteAccount } from '../controllers/userController.js'
 import { requireAuth } from '../middleware/auth.js'
 import { upload } from '../middleware/upload.js'
 
@@ -11,5 +11,6 @@ router.put('/me', requireAuth, updateProfile)        // PUT /api/users/me (auth 
 router.post('/me/avatar', requireAuth, upload.single('file'), uploadAvatar)
 router.post('/me/media', requireAuth, upload.single('file'), uploadMedia)
 router.delete('/me/media/:mediaId', requireAuth, deleteMedia)
+router.delete('/me', requireAuth, deleteAccount)
 
 export default router
