@@ -4,6 +4,7 @@ import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import { getSalvageTier, TIER_COLORS } from '../data/salvage'
 import { getActivity } from '../data/activities'
+import { getContractFaction } from '../data/contracts'
 
 const CLASS_COLORS = {
   Recon: 'bg-blue-900/40 border-blue-700 text-blue-300',
@@ -324,6 +325,24 @@ export default function ProfilePage() {
               <div className={`inline-flex flex-col border rounded-xl px-4 py-3 ${activity.color}`}>
                 <span className="font-semibold text-sm">{activity.label}</span>
                 <span className="text-xs mt-1 opacity-80 leading-relaxed">{activity.description}</span>
+              </div>
+            </div>
+          ) : null
+        })()}
+
+        {/* Active Contract */}
+        {profile.active_contract && (() => {
+          const data = getContractFaction(profile.active_contract)
+          return data ? (
+            <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-3">
+                Active Contract
+              </h2>
+              <div className={`inline-flex flex-col border rounded-xl px-4 py-3 ${data.color}`}>
+                <span className="text-xs font-semibold uppercase tracking-wider opacity-70 mb-0.5">
+                  {data.faction}
+                </span>
+                <span className="font-semibold text-sm">{profile.active_contract}</span>
               </div>
             </div>
           ) : null

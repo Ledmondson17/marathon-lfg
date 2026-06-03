@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import SalvagePicker from '../components/SalvagePicker'
+import ContractPicker from '../components/ContractPicker'
 import { ACTIVITIES } from '../data/activities'
 
 const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
@@ -38,6 +39,7 @@ export default function EditProfilePage() {
     socials: { twitch: '', discord: '', youtube: '', instagram: '', twitter: '' },
     looking_for_salvage: [],
     preferred_activity: '',
+    active_contract: '',
   })
 
   // Check if Bungie just redirected back with a result
@@ -66,6 +68,7 @@ export default function EditProfilePage() {
           socials: { twitch: '', discord: '', youtube: '', instagram: '', twitter: '', ...p.socials },
           looking_for_salvage: p.looking_for_salvage || [],
           preferred_activity: p.preferred_activity || '',
+          active_contract: p.active_contract || '',
         })
       } catch {
         // No existing profile yet
@@ -356,6 +359,15 @@ export default function EditProfilePage() {
             <SalvagePicker
               selected={form.looking_for_salvage}
               onChange={(val) => setForm({ ...form, looking_for_salvage: val })}
+            />
+          </div>
+
+          {/* Active Contract */}
+          <div>
+            <label className={labelClass}>Active Contract</label>
+            <ContractPicker
+              selected={form.active_contract}
+              onChange={(val) => setForm({ ...form, active_contract: val })}
             />
           </div>
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from '../api/axios'
 import { ALL_SALVAGE, getSalvageTier, TIER_COLORS } from '../data/salvage'
 import { ACTIVITIES, getActivity } from '../data/activities'
+import { CONTRACT_FACTIONS, getContractFaction } from '../data/contracts'
 
 const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 const PLATFORMS = ['ps5', 'xbox', 'pc']
@@ -11,7 +12,7 @@ const PLATFORM_LABELS = { ps5: 'PS5', xbox: 'Xbox', pc: 'PC' }
 export default function PlayerListPage() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '', salvage: '', activity: '' })
+  const [filters, setFilters] = useState({ platform: '', class: '', search: '', kd: '', timezone: '', salvage: '', activity: '', contract: '' })
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -24,6 +25,7 @@ export default function PlayerListPage() {
         if (filters.timezone) params.timezone = filters.timezone
         if (filters.salvage) params.salvage = filters.salvage
         if (filters.activity) params.activity = filters.activity
+        if (filters.contract) params.contract = filters.contract
         const res = await axios.get('/api/users', { params })
         setPlayers(res.data)
       } catch {
@@ -92,6 +94,20 @@ export default function PlayerListPage() {
             <option value="CET">CET — Central European</option>
             <option value="JST">JST — Japan</option>
             <option value="AEST">AEST — Australia Eastern</option>
+          </select>
+          <select
+            value={filters.contract}
+            onChange={(e) => setFilters({ ...filters, contract: e.target.value })}
+            className="bg-brand-surface border border-brand-border rounded px-4 py-2 text-brand-text focus:outline-none focus:border-brand-accent transition-colors text-sm"
+          >
+            <option value="">All Contracts</option>
+            {Object.entries(CONTRACT_FACTIONS).map(([faction, data]) => (
+              <optgroup key={faction} label={`— ${faction} —`}>
+                {data.contracts.map(name => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </optgroup>
+            ))}
           </select>
           <select
             value={filters.activity}
@@ -170,6 +186,15 @@ export default function PlayerListPage() {
                   ))}
                 </div>
 
+                {player.active_contract && (() => {
+                  const data = getContractFaction(player.active_contract)
+                  return data ? (
+                    <div className={`text-xs border rounded-lg px-2.5 py-1.5 mb-2 inline-flex flex-col ${data.badge}`}>
+                      <span className="opacity-60 uppercase tracking-wide text-[10px] font-semibold">{data.faction}</span>
+                      <span className="font-medium">{player.active_contract}</span>
+                    </div>
+                  ) : null
+                })()}
                 {(player.playstyle || player.bio) && (
                   <p className="text-brand-muted text-sm line-clamp-2">{player.playstyle || player.bio}</p>
                 )}
