@@ -129,6 +129,16 @@ export const CONTRACT_FACTIONS = {
       'Baseline Calibration',
     ],
   },
+  // Season 2 — Night Marsh limited-time contracts
+  // Contract names will be added as they are documented
+  Limited: {
+    color: 'bg-indigo-900/40 border-indigo-500 text-indigo-300',
+    badge: 'bg-indigo-900/40 border-indigo-500 text-indigo-300',
+    dot: 'bg-indigo-400',
+    contracts: [
+      // Night Marsh S2 limited contracts — names to be added
+    ],
+  },
 }
 
 // Flat list of all contracts for search

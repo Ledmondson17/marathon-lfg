@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { getSalvageTier, TIER_COLORS } from '../data/salvage'
 import { getActivity } from '../data/activities'
 import { getContractFaction } from '../data/contracts'
+import { getMap } from '../data/maps'
 
 const CLASS_COLORS = {
   Recon: 'bg-blue-900/40 border-blue-700 text-blue-300',
@@ -347,6 +348,28 @@ export default function ProfilePage() {
             </div>
           ) : null
         })()}
+
+        {/* Preferred Maps */}
+        {profile.preferred_maps?.length > 0 && (
+          <div className="bg-brand-surface border border-brand-border rounded-xl p-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-brand-muted mb-4">Preferred Maps</h2>
+            <div className="flex flex-wrap gap-2">
+              {profile.preferred_maps.map(mapId => {
+                const map = getMap(mapId)
+                return map ? (
+                  <span key={mapId} className={`relative border rounded-lg px-3 py-1.5 text-sm font-medium ${map.color}`}>
+                    {map.label}
+                    {map.badge && (
+                      <span className="ml-1.5 text-[10px] bg-indigo-500 text-white rounded px-1 font-bold">
+                        {map.badge}
+                      </span>
+                    )}
+                  </span>
+                ) : null
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Currently Hunting */}
         {profile.looking_for_salvage?.length > 0 && (

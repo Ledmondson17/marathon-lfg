@@ -2,10 +2,10 @@ import pool from '../db/pool.js'
 import { cloudinary, uploadToCloudinary } from '../middleware/upload.js'
 
 // Public columns safe to return to the frontend
-const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, bungie_kd, looking_for_salvage, preferred_activity, active_contract, created_at'
+const PUBLIC_FIELDS = 'id, username, avatar_url, bio, playstyle, availability, region, timezone, platforms, top_classes, socials, bungie_display_name, bungie_kd, looking_for_salvage, preferred_activity, active_contract, preferred_maps, created_at'
 
 export async function getPlayers(req, res) {
-  const { platform, class: cls, search, kd, timezone, salvage, activity, contract } = req.query
+  const { platform, class: cls, search, kd, timezone, salvage, activity, contract, map } = req.query
   let query = `SELECT ${PUBLIC_FIELDS} FROM users`
   const conditions = []
   const values = []
@@ -25,6 +25,10 @@ export async function getPlayers(req, res) {
   if (timezone) {
     values.push(timezone)
     conditions.push(`timezone = $${values.length}`)
+  }
+  if (map) {
+    values.push(map)
+    conditions.push(`$${values.length} = ANY(preferred_maps)`)
   }
   if (contract) {
     values.push(contract)
@@ -109,7 +113,7 @@ export async function getProfile(req, res) {
 }
 
 export async function updateProfile(req, res) {
-  const { bio, playstyle, availability, region, timezone, platforms, top_classes, socials, looking_for_salvage, preferred_activity, active_contract } = req.body
+  const { bio, playstyle, availability, region, timezone, platforms, top_classes, socials, looking_for_salvage, preferred_activity, active_contract, preferred_maps } = req.body
 
   // Validate top_classes max 3
   if (top_classes && top_classes.length > 3) {
@@ -126,10 +130,10 @@ export async function updateProfile(req, res) {
       `UPDATE users SET
         bio = $1, playstyle = $2, availability = $3, region = $4, timezone = $5,
         platforms = $6, top_classes = $7, socials = $8, looking_for_salvage = $9,
-        preferred_activity = $10, active_contract = $11
-       WHERE id = $12
+        preferred_activity = $10, active_contract = $11, preferred_maps = $12
+       WHERE id = $13
        RETURNING ${PUBLIC_FIELDS}`,
-      [bio, playstyle, availability, region, timezone, platforms, top_classes, socials, looking_for_salvage, preferred_activity, active_contract, req.user.id]
+      [bio, playstyle, availability, region, timezone, platforms, top_classes, socials, looking_for_salvage, preferred_activity, active_contract, preferred_maps, req.user.id]
     )
     res.json(result.rows[0])
   } catch (err) {

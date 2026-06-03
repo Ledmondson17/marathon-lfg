@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import SalvagePicker from '../components/SalvagePicker'
 import ContractPicker from '../components/ContractPicker'
 import { ACTIVITIES } from '../data/activities'
+import { MAPS } from '../data/maps'
 
 const MARATHON_CLASSES = ['Recon', 'Vandal', 'Destroyer', 'Assassin', 'Thief', 'Triage', 'Sentinel']
 const PLATFORMS = ['ps5', 'xbox', 'pc']
@@ -40,6 +41,7 @@ export default function EditProfilePage() {
     looking_for_salvage: [],
     preferred_activity: '',
     active_contract: '',
+    preferred_maps: [],
   })
 
   // Check if Bungie just redirected back with a result
@@ -69,6 +71,7 @@ export default function EditProfilePage() {
           looking_for_salvage: p.looking_for_salvage || [],
           preferred_activity: p.preferred_activity || '',
           active_contract: p.active_contract || '',
+          preferred_maps: p.preferred_maps || [],
         })
       } catch {
         // No existing profile yet
@@ -369,6 +372,37 @@ export default function EditProfilePage() {
               selected={form.active_contract}
               onChange={(val) => setForm({ ...form, active_contract: val })}
             />
+          </div>
+
+          {/* Preferred Maps */}
+          <div>
+            <label className={labelClass}>Preferred Maps <span className="font-normal">(select all that apply)</span></label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {MAPS.map((map) => {
+                const selected = form.preferred_maps.includes(map.id)
+                return (
+                  <button key={map.id} type="button"
+                    onClick={() => {
+                      setForm(prev => ({
+                        ...prev,
+                        preferred_maps: selected
+                          ? prev.preferred_maps.filter(m => m !== map.id)
+                          : [...prev.preferred_maps, map.id]
+                      }))
+                    }}
+                    className={`relative border rounded-lg px-3 py-2.5 text-sm font-medium text-left transition-colors ${
+                      selected ? map.color : 'bg-brand-card border-brand-border text-brand-muted hover:border-brand-accent/50'
+                    }`}>
+                    {map.label}
+                    {map.badge && (
+                      <span className="absolute top-1 right-1.5 text-[10px] bg-indigo-500 text-white rounded px-1 font-bold">
+                        {map.badge}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           {/* Socials */}
