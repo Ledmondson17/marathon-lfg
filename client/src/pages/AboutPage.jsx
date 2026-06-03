@@ -15,7 +15,8 @@ export default function AboutPage() {
         <div className="space-y-8 text-brand-text text-lg leading-relaxed">
           <p>
             Playing with like-minded players can maximize your potential and skills.
-            Teaming up with players that share your playstyle and ideologies can help
+            Video games are like sports — teaming up with players that share your same
+            playstyle, in-game ideologies, or playstyles that complement yours can help
             you improve your game sense, technique, decision-making, communication,
             and overall knowledge of the game.
           </p>
