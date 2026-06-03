@@ -1,5 +1,6 @@
 // All documented Marathon contracts organized by faction
 // Each faction uses its in-game brand color
+// Cross-referenced against marathondb.gg — 81 total Season 1 contracts
 
 export const CONTRACT_FACTIONS = {
   CyberAcme: {
@@ -24,7 +25,7 @@ export const CONTRACT_FACTIONS = {
       "A Runner Can't Adapt; They Can't Fight",
       'Target Acquired',
       'Return on Investment',
-      'Welcome to Tau Ceti',
+      'Welcome to Tau Ceti 1/2',
       'Introducing: NuCaloric',
       'Introducing: Traxus',
       'Introducing: MIDA',
@@ -45,13 +46,13 @@ export const CONTRACT_FACTIONS = {
       'Contained Analysis I',
       'Sterile Environment I',
       'Growth Mindset I',
-      "You're Rubber I'm Glue",
+      "You're Rubber, I'm Glue",
       'Chemical Peel',
       'Assault with Battery',
       'Ecological Niche',
-      'One Thousand Slimy Things I',
+      'One Thousand Thousand Slimy Things I',
       'Data Mapping',
-      'Data Reconstruction',
+      'Data Reconstruction 1/3',
       'Survival Directive',
     ],
   },
@@ -70,7 +71,7 @@ export const CONTRACT_FACTIONS = {
       'Field Testing: SMGs I',
       'Inventory Control I',
       'Arms Dealer',
-      'Equitable Distribution',
+      'Equitable Distribution 1/4',
       'Cutthroat Competition',
     ],
   },
@@ -86,7 +87,7 @@ export const CONTRACT_FACTIONS = {
       'Escape/Defy I',
       'Stand/Fight I',
       'Consume/Control I',
-      'US/Them I',
+      'Us/Them I',
       'Smash/Grab I',
       'Murder/Take',
       'Consume/Control',
@@ -95,7 +96,7 @@ export const CONTRACT_FACTIONS = {
       'Fire/Fuel',
       'Heads/Tails',
       'Truth/Lies',
-      'Protect/Destroy',
+      'Protect/Destroy 1/5',
       'Order/Chaos',
     ],
   },
@@ -116,6 +117,7 @@ export const CONTRACT_FACTIONS = {
       'Killing in the Name Of',
       'Climbing the Ranks',
       'Best in Class',
+      'Finisher Protocol',
       'The Fleeting Grave',
     ],
   },
