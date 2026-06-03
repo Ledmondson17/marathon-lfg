@@ -15,7 +15,8 @@ export default function HomePage() {
         </h1>
         <p className="text-brand-muted text-lg mb-10 max-w-xl mx-auto">
           Shell Searcher helps you build your player profile, show off your
-          playstyle, and connect with teammates who match your vibe.
+          playstyle, and connect with teammates who match your vibe. Find that
+          consistent team you have been looking for and run together.
         </p>
         <div className="flex gap-4 justify-center">
           <Link
